@@ -1,1 +1,14 @@
 
+# test:
+a = 12
+b = 2
+
+date = "2022-02-04"
+
+print(as.POSIXct(Sys.Date())-as.POSIXct(date))
+
+summe = function(x,y) {
+  x+y
+ }
+
+print(summe(a,b))
