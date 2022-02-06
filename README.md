@@ -1,2 +1,1 @@
 # casestudy_ida
-tets
