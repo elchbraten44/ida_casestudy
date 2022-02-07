@@ -47,9 +47,42 @@ ggplot(logistik, aes(logistikverzug)) +
 ## 1. b)
 max(logistik$logistikverzug)
 
+
 ## 1. c)
+# Arithmetisches Mittel:
 mean(logistik$logistikverzug)
+
+# Median:
+fivenum(logistik$logistikverzug)[3]
+
+# Modus
+names(which.max(table(logistik$logistikverzug)))
+
+
 
 ## 1. d)
 plot_ly(x = logistik$logistikverzug, type = "histogram")
+
+
+# Aufgabe 2
+## S. Rmd-File
+
+
+
+
+# Aufgabe 3
+# Wie viele der Komponenten K7 landeten in Fahrzeugen, die in Wehr, Landkreis Waldshut zugelassen wurden? (3 Punkte)
+setwd("C:/Users/Samuel/code/ida_casestudy/Data/Zulassungen")
+getwd()
+
+# Ist das der richtige Ort? Wehr (Baden) nicht in Zulassungstabelle vorhanden
+# WEHR1 nach Tabelle Geodaten_Gemeinden_v1.2_2017-08-02_TrR
+zulassungen = read.csv("Zulassungen_alle_Fahrzeuge.csv", head = TRUE, sep=";")
+zulassungen = subset(zulassungen, subset = zulassungen$Gemeinden=="WEHR1")
+# S. Stücklisten
+
+
+
+
+
 
