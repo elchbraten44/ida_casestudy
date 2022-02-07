@@ -97,6 +97,10 @@ Vorteile eines RDBMS:
 #Aufgabe 5
 ###Sie wollen Ihre Applikation veröffentlichen. Warum ist es gerade dann sinnvoll die Datensätze auf der Datenbank eines Servers abzulegen? Warum können Sie die Datensätze nicht auf Ihrem persönlichen Computer ablegen? Nennen Sie eine einfache Möglichkeit Ihre Applikation ihrem Kundenkreis zugänglich zu machen? (2 Argumente je Frage, insg. 3 Punkte)
 
+
+####Da ein Fernzugriff auf die Datenbank möglich sein soll ist es notwendig, diese auf einem Server anzulegen, auf welchen 24/7 zugegriffen werden kann. So ist es ebenso möglich, dass die Daten nichtnur zeitlich uneingeschränkt, sondern auch weltweit ohne direkten Zugriff auf einen speziellen Computer verfügbar gemacht werden können.
+####Eine Möglichkeit, die Applikation zu veröffentlichen wäre, sie innerhalb eines firmeneigenen passwortgeschützten Bereichs in eine Website zu implementieren. Ebenso wäre es möglich sie als Datei zu verschicken (diese Datei müsste ohne Aufwand ausführbar sein und eine Schnittstelle zum jew. Server enthalten.).
+
 ```{}
 
 ```
