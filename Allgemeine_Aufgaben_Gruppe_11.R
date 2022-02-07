@@ -1,6 +1,8 @@
 setwd("C:/Users/Samuel/code/ida_casestudy/data/Logistikverzug")
 getwd()
+install.packages("plotly")
 library(tidyverse)
+library(plotly)
 
 
 #Aufgabe 1
@@ -40,3 +42,14 @@ print(nrow(eingang) == nrow(produktion) & nrow(eingang) == nrow(logistik))
 
 ggplot(logistik, aes(logistikverzug)) +
     geom_bar()
+
+
+## 1. b)
+max(logistik$logistikverzug)
+
+## 1. c)
+mean(logistik$logistikverzug)
+
+## 1. d)
+plot_ly(x = logistik$logistikverzug, type = "histogram")
+
