@@ -1,0 +1,119 @@
+---
+title: "Allgemeine Aufgaben Gruppe 11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Import der librarys
+
+<ul>
+    <li> lib1 </li>
+    <li> lib2 </li>
+</ul>
+
+```{r echo = F, message = F}
+load.lib<-c("ggplot2","tidy","gganimate","visdat")
+
+
+install.lib = load.lib[!load.lib %in% installed.packages()]
+for(lib in install.lib) install.packages(lib,dependencies=TRUE)
+sapply(load.lib,require,character=TRUE)
+```
+
+
+#Aufgabe 1
+###Logistik spielt in der Produktentwicklung der Automobilindustrie eine immer größer werdende Rolle. So müssen vom Lieferanten produzierte Teile zunächst zum OEM geliefert werden, bevor sie eingebaut werden können. Was auf den ersten Blick logisch erscheint, sollte für eine professionelle Organisation unbedingt näher analysiert werden. Erstellen Sie deshalb eine Verteilung für den Logistikverzug von Komponente „K7“. Nutzen Sie hierfür das Produktionsdatum aus dem Datensatz “Komponente_K7.csv” und das Wareneingangsdatum aus “Logistikverzug_K7.csv”. Sie können davon ausgehen, dass der Hersteller das Teil am auf den Produktionstag folgenden Werktag an die Logistikabteilung übergibt. Für die Versandvorbereitung wird ein Werktag benötig. Erstellen Sie für die Modellbildung in R einen neuen Datensatz “Logistikverzug”, der die benötigten Informationen aus beiden Datensätzen enthält.
+
+####Wie ist der Logistikverzug verteilt? Begründen Sie Ihre Auswahl und stellen Sie Ihre Vorgehensweise kurz dar (6 Punkte).
+
+####Wie viel Zeit vergeht mindestens/höchstens zwischen Warenausgang und Wareneingang (2 Punkte)?
+
+####Bestimmen Sie den Mittelwert des Logistikverzugs (1 Punkt).
+
+####tellen Sie die Verteilung in geeigneter Weise mit Plotly dar (2 Punkte).
+
+```{r dataset, echo = FALSE}
+...
+```
+
+
+
+
+
+
+#Aufgabe 2
+### Warum ist es sinnvoll, die Ihnen bereitgestellten Daten in separaten Dateien abzulegen und nicht alles in einer riesigen Tabelle abzuspeichern (4 Argumente)? Wie nennt sich das zugrunde liegende Datenbankkonzept? (3
+
+Bei dem zugrundeliegenden Datenbankkonzept handelt es sich um das sog. 'Relational Database Management System' (RDBMS). Mit dem RDBMS ist es möglich, relationale Datenbanken und die zugehörigen Daten zu erstellen, zu pflegen und zu administrieren. 
+Hierzu werden die Daten separat in Tabellen gespeichert und strukturiert miteinander verknüpft. Diese Verknüpfungen werden genutzt, um Tabellen in beziehung zu setzen. 
+
+Es ist notwendig die Daten in eine normalisierte Form zu bringen und komplexe Datenobjekte so zu zerlegen, damit die in Beziehung zu einander stehen (über gemeinsame Attribute).
+
+Daten können mittels Datenbanksprachen wie SQL abgefragt und manipuliert werden.
+
+Vorteile eines RDBMS:
+<ol>
+    <li> Schnellerer Abruf der Daten </li>
+    <li> Eignet sich für für sehr große Datenvolumina </li>
+    <li> Minimierung der Auswirkungen von Datenevrlust </li>
+    <li> Zuverlässiges System zur Datenspeicherung </li>
+    <li> Redundanzfreiheit und Konsistenz der Daten gewährleistet </li>
+    <li> Abfragen der Daten nach verschiedensten Kritierein ist möglich </li>
+    <li> Unterstützung verteilter Datenbanken und einer Client-Server-Architektur</li>
+    <li> Getrennt gespeicherte Daten erhöhen auch die Sicherheit des vollständigen                    Datensatzes. </li>
+    <li> Lässt mehrere Nutzerzugriffer zur selben Zeit (bei Gewährleistung der Datenintegrität) zu </li>
+</ol>
+
+
+
+
+
+
+
+#Aufgabe 3
+###Wie viele der Komponenten K7 landeten in Fahrzeugen, die in Dortmund zugelassen wurden?
+
+```{r, warning = FALSE, message = FALSE}
+
+```
+
+
+
+
+#Aufgabe 4
+### Welche Datentypen haben die Attribute der Zulassungstabelle „Zulassungen_aller_Fahrzeuge“? Erstellen Sie dazu eine Tabelle in Markdown. (2 Punkte)
+
+```{r dataset, echo = F}
+
+```
+
+
+
+
+
+#Aufgabe 5
+###Sie wollen Ihre Applikation veröffentlichen. Warum ist es gerade dann sinnvoll die Datensätze auf der Datenbank eines Servers abzulegen? Warum können Sie die Datensätze nicht auf Ihrem persönlichen Computer ablegen? Nennen Sie eine einfache Möglichkeit Ihre Applikation ihrem Kundenkreis zugänglich zu machen? (2 Argumente je Frage, insg. 3 Punkte)
+
+```{}
+
+```
+
+#Aufgabe 6
+###Am 11.08.2010 hat es einen Unfall mit Fahrerflucht gegeben. Von dem Kennzeichen des Unfallwagens fehlt jede Spur. Da Sie für das Kraftfahrtbundesamt arbeiten und fragt bittet Sie die Polizei um Mithilfe. Finden Sie heraus, wo das Fahrzeug mit der Karosseriebauteilnummer „K7-114-1142-31“ zugelassen wurde. (3 Punkte)
+
+
+```{}
+
+```
+
+
+
+
+
+
+
+
+
