@@ -48,13 +48,15 @@ ggplot(logistik, aes(logistikverzug)) +
 ## 1. b)
 max(logistik$logistikverzug)
 
-
 ## 1. c)
 # Arithmetisches Mittel:
 mean(logistik$logistikverzug)
 
 # Median:
 fivenum(logistik$logistikverzug)[3]
+
+ggplot(logistik, aes(logistikverzug)) +
+    geom_boxplot()
 
 # Modus
 names(which.max(table(logistik$logistikverzug)))
@@ -69,6 +71,49 @@ plot_ly(x = logistik$logistikverzug, type = "histogram")
 # dass die Lieferverzüge approximativ normalverteilt sind
 # Es handelt sich um eine symmetrische Verteilung, da Modus=Median=Mittelwert
 # Modus ist definiert, da unimodale Verteilung vorliegt
+
+
+#Chi2 - Anpassungstest
+#Hypothese H0: F(x)=F_0(x)~N(mu,sigma^2)
+#Hypothese H1: F(x)!=F_0(x)~N(mu,sigma^2)
+#Signifikanzniveau alpha = 5%
+
+chi2_norm = function(data, alpha) {
+    groups = as.numeric(names(table(data)))
+    obs = unname(table(data))
+    avg = mean(data)
+    s = sqrt(var(data))
+    n = sum(obs)
+ 
+    exp_dist = c(pnorm(groups[1],avg,s))
+    
+    for(i in groups[2]:groups[length(groups)]) {
+        exp_dist = c(exp_dist, pnorm(i,avg,s)-pnorm(i-1,avg,s))
+    }
+    obs = obs[(exp_dist*n)>=5]
+    exp_dist = exp_dist[(exp_dist*n)>=5]
+    
+    
+     #Ablehnbereich immer >:
+     c = qchisq(1-alpha, n-1)
+     v =sum((obs-n*exp_dist)^2/(n*exp_dist))
+     
+     if(v > c) {
+         print("Folgt keiner NV")
+     } else {
+         print("Folgt NV")
+     }
+}
+
+chi2_norm(logistik$logistikverzug,0.05)
+
+#Alternativ Kolmogorov-Smirnov / Shapiro Wilk???
+
+
+
+
+
+
 
 # Aufgabe 2
 ## S. Rmd-File
