@@ -5,8 +5,6 @@ library(stringr)
 # Korrektes working directory ergänzen
 #Hilfreicher Link: https://github.com/raredd/regex
 
-
-#Welche Einzelteile bzw. Komponenten sind verbaut?
 #Laut Bestandteile_Fahrzeuge_OEM1_Typ11:
 #Komponenten: K4 (Karosserie); K3SG1 (Schaltung); K2LE1 (Sitze); K1BE1 (Motor)
 #K1BE1 besteht aus T1,T2,T3,T4
@@ -14,12 +12,10 @@ library(stringr)
 #K3SG1 besteht aus T21,T22,T23
 #K4 besteht aus T30,T31,T32
 
+
+
 # Import der Einzelteile
 setwd("C:/Users/Samuel/code/ida_casestudy/Data/Einzelteil")
-
-#Import der Einzeltei-Datensätze
-#Einlesen der Datensätze als Strings
-#Mit Schleife durchiterieren --> Datensatz
 
 
 #Sehr groß, schwer zu öffnen
@@ -27,7 +23,7 @@ T1_dirty = readLines("Einzelteil_T02.txt")
 
 
 #Keine Symbole für Zeilenumbruch
-T2_unclean = read.Lines("Einzelteil_T02.txt") %>% 
+T2_dirty = read.Lines("Einzelteil_T02.txt") %>% 
     gsub(pattern = ' ')
 
 
@@ -50,16 +46,13 @@ T4 = read.csv2("Einzelteil_T04.csv", stringsAsFactors = F)
 
 #Zeilenumbruch wenn kein Absatnd vorhanden
 #Funktioniert nicht!
-T11_unclean = readLines("Einzelteil_T11.txt") %>% 
+T11_dirty = readLines("Einzelteil_T11.txt") %>% 
     gsub(pattern = '', replace = '\n', .) %>% 
     gsub(pattern = "...???????????")
 #Zeilennummerierung wird entfernt
-for(n in 2:length(T11_unclean)) {
-    T11 = read.table(textConnection(T11_unclean[n]), sep = " ", header = T)
+for(n in 2:length(T11_dirty)) {
+    T11 = read.table(textConnection(T11_dirty[n]), sep = " ", header = T)
 }
-
-
-
 
 
 # sep =";"
@@ -92,14 +85,8 @@ for (m in 2:length(T31_dirty) ) {
 }
 
 
-
-
 # Erledigt
 T32 = read.csv2("Einzelteil_T15.csv")
-
-
-
-
 
 
 
@@ -114,6 +101,7 @@ setwd("C:/Users/Samuel/code/ida_casestudy/Data/Komponente")
 GK_K1BE1 = read.csv("Komponente_K1BE1.csv")
 
 #Erledigt
+#Sonderzeichen an anderem Computer überprüfen (wird in R anders, als in Atom angezeigt)
 GK_K2LE1_dirty = readLines("Komponente_K2LE1.txt") %>% 
     gsub(pattern = '', replace = '\n', perl = TRUE) %>% 
     gsub(pattern = 'II', replace = ',')
