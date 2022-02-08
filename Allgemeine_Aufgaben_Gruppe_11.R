@@ -73,41 +73,44 @@ plot_ly(x = logistik$logistikverzug, type = "histogram")
 # Modus ist definiert, da unimodale Verteilung vorliegt
 
 
+
+
 #Chi2 - Anpassungstest
 #Hypothese H0: F(x)=F_0(x)~N(mu,sigma^2)
 #Hypothese H1: F(x)!=F_0(x)~N(mu,sigma^2)
 #Signifikanzniveau alpha = 5%
-
-chi2_norm = function(data, alpha) {
-    groups = as.numeric(names(table(data)))
-    obs = unname(table(data))
-    avg = mean(data)
-    s = sqrt(var(data))
-    n = sum(obs)
- 
-    exp_dist = c(pnorm(groups[1],avg,s))
-    
-    for(i in groups[2]:groups[length(groups)]) {
-        exp_dist = c(exp_dist, pnorm(i,avg,s)-pnorm(i-1,avg,s))
-    }
-    obs = obs[(exp_dist*n)>=5]
-    exp_dist = exp_dist[(exp_dist*n)>=5]
-    
-    
-     #Ablehnbereich immer >:
-     c = qchisq(1-alpha, n-1)
-     v =sum((obs-n*exp_dist)^2/(n*exp_dist))
-     
-     if(v > c) {
-         print("Folgt keiner NV")
-     } else {
-         print("Folgt NV")
-     }
-}
-
-chi2_norm(logistik$logistikverzug,0.05)
-
 #Alternativ Kolmogorov-Smirnov / Shapiro Wilk???
+# Wo liegt der Fehler?
+# chi2_norm = function(data, alpha) {
+#     groups = as.numeric(names(table(data)))
+#     obs = unname(table(data))
+#     avg = mean(data)
+#     s = sqrt(var(data))
+#     n = sum(obs)
+#  
+#     exp_dist = c(pnorm(groups[1],avg,s))
+#     
+#     for(i in groups[2]:groups[length(groups)]) {
+#         exp_dist = c(exp_dist, pnorm(i,avg,s)-pnorm(i-1,avg,s))
+#     }
+#     obs = obs[(exp_dist*n)>=5]
+#     exp_dist = exp_dist[(exp_dist*n)>=5]
+#     
+#     
+#      #Ablehnbereich immer >:
+#      c = qchisq(1-alpha, length(exp_dist)-1)
+#      v =sum((obs-n*exp_dist)^2/(n*exp_dist))
+#      
+#      if(v > c) {
+#          cat("Die übergebenen Daten folgen bei einem Signifikanzniveau", alpha, "keiner Normalverteilung")
+#      } else {
+#          cat("Die übergebenen Daten sind bei einem Signifikanzniveau", alpha, "approximativ normalverteilt.")
+#      }
+# }
+# 
+# chi2_norm(logistik$logistikverzug,0.1)
+
+
 
 
 
