@@ -3,6 +3,7 @@ getwd()
 install.packages("plotly")
 library(tidyverse)
 library(plotly)
+library(stringr)
 
 
 #Aufgabe 1
@@ -63,6 +64,11 @@ names(which.max(table(logistik$logistikverzug)))
 ## 1. d)
 plot_ly(x = logistik$logistikverzug, type = "histogram")
 
+# Das Histogramm ähnelt einer Normalverteilung. (Eventuell mit Zentralem Grenzwertsatz argumentieren?)
+# Die additive Überlagerung der einzelnen Zufallseffekte der Lieferbedingungen könnte dazu führen, 
+# dass die Lieferverzüge approximativ normalverteilt sind
+# Es handelt sich um eine symmetrische Verteilung, da Modus=Median=Mittelwert
+# Modus ist definiert, da unimodale Verteilung vorliegt
 
 # Aufgabe 2
 ## S. Rmd-File
@@ -74,15 +80,41 @@ plot_ly(x = logistik$logistikverzug, type = "histogram")
 # Wie viele der Komponenten K7 landeten in Fahrzeugen, die in Wehr, Landkreis Waldshut zugelassen wurden? (3 Punkte)
 setwd("C:/Users/Samuel/code/ida_casestudy/Data/Zulassungen")
 getwd()
+#K7 ist nur in den Modellen vom Typ22 enthalten!!!
+
 
 # Ist das der richtige Ort? Wehr (Baden) nicht in Zulassungstabelle vorhanden
 # WEHR1 nach Tabelle Geodaten_Gemeinden_v1.2_2017-08-02_TrR
 zulassungen = read.csv("Zulassungen_alle_Fahrzeuge.csv", head = TRUE, sep=";")
-zulassungen = subset(zulassungen, subset = zulassungen$Gemeinden=="WEHR1")
-# S. Stücklisten
+#Entfernen der unnötigen ersten Spalte
+zulassungen = zulassungen[,-1]
+
+setwd("C:/Users/Samuel/code/ida_casestudy/Data/Fahrzeug")
+Komponenten_Typ22 = read.csv2("Bestandteile_Fahrzeuge_OEM2_Typ22.csv")
+Komponenten_Typ22 = Komponenten_Typ22[,-1]
+
+# Filtern der Zulassungen auf Fahrzeuge aus WEHR1
+zulassungen_wehr1 = subset(zulassungen, subset = zulassungen$Gemeinden=="WEHR1")
+# Mit Datensatz zu Bestandtteilen joinen
+fahrzeuge_mit_k7_wehr1 = inner_join(Komponenten_Typ22, zulassungen_wehr1, by=c("ID_Fahrzeug" = "IDNummer"))
+nrow(fahrzeuge_mit_k7_wehr1)
 
 
 
+#Aufgabe 4
+glimpse(zulassungen)
+
+#IDNummer: Character
+#Gemeinden: Character
+#Zulassung: Character (könnte mit as.Date(zulassungen$Zulassung, format= "%Y %d %m") sinnvoll formatiert werden)
 
 
 
+#Aufgabe 5
+#Lösung: siehe Rmd File
+
+
+#Aufgabe 6
+zugelassene_fahrzeuge_mit_K7 = inner_join(zulassungen, Komponenten_Typ22, by=c("IDNummer" = "ID_Fahrzeug"))
+gesuchtes_Fahrzeug = subset(zugelassene_fahrzeuge_mit_K7, subset=(zugelassene_fahrzeuge_mit_K7$ID_Karosserie == "K7-114-1142-31")) 
+print(gesuchtes_Fahrzeug$Gemeinden)
