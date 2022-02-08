@@ -36,7 +36,7 @@ sapply(load.lib,require,character=TRUE)
 ####tellen Sie die Verteilung in geeigneter Weise mit Plotly dar (2 Punkte).
 
 ```{r dataset, echo = FALSE}
-...
+Lösungen s. R Datei
 ```
 
 
@@ -77,7 +77,7 @@ Vorteile eines RDBMS:
 ###Wie viele der Komponenten K7 landeten in Fahrzeugen, die in Dortmund zugelassen wurden?
 
 ```{r, warning = FALSE, message = FALSE}
-
+Lösungen s. R Datei
 ```
 
 
@@ -87,7 +87,7 @@ Vorteile eines RDBMS:
 ### Welche Datentypen haben die Attribute der Zulassungstabelle „Zulassungen_aller_Fahrzeuge“? Erstellen Sie dazu eine Tabelle in Markdown. (2 Punkte)
 
 ```{r dataset, echo = F}
-
+Lösungen s. R Datei
 ```
 
 
