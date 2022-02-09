@@ -266,10 +266,3 @@ print(gesuchtes_Fahrzeug$Gemeinden)
 ```
 Das Fahrzeug mit der gesuchten Karosserie-Teilenummer "K7-114-1142-31" wurde in Allendorf-Eder zugelassen.
 
-
-
-
-
-
-
-
