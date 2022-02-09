@@ -1,42 +1,163 @@
 ---
 title: "Allgemeine Aufgaben Gruppe 11"
+author: "Gruppe 11"
 output: html_document
+theme: paper
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Import der librarys
-
+<h2> Import der benötigten Bibliotheken </h2>
 <ul>
-    <li> lib1 </li>
-    <li> lib2 </li>
+    <li> tidyverse </li>
+    <li> plotly </li>
+    <li> stringr </li>
 </ul>
 
+
 ```{r echo = F, message = F}
-load.lib<-c("ggplot2","tidy","gganimate","visdat")
+if(!require(tidyverse)) {
+    install.packages("tidyverse")
+}
+if(!require(plotly)) {
+    install.packages("plotly")
+}
+if(!require(stringr)) {
+    install.packages("stringr")
+}
 
-
-install.lib = load.lib[!load.lib %in% installed.packages()]
-for(lib in install.lib) install.packages(lib,dependencies=TRUE)
-sapply(load.lib,require,character=TRUE)
+library(tidyverse)
+library(plotly)
+library(stringr)
 ```
+<h2> Inhaltsverzeichnis </h2>
+<ol>
+    <li>
+        <a href="#Aufgabe1">
+        Aufgabe 1
+        </a>
+    </li>
+    <li>
+        <a href="#Aufgabe2">
+        Aufgabe 2
+        </a>
+    </li>
+    <li>
+        <a href="#Aufgabe3">
+        Aufgabe 3
+        </a>
+    </li>
+    <li>
+        <a href="#Aufgabe4">
+        Aufgabe 4
+        </a>
+    </li>
+    <li>
+        <a href="#Aufgabe5">
+        Aufgabe 5
+        </a>
+    </li> 
+    <li>
+        <a href="#Aufgabe6">
+        Aufgabe 6
+        </a>
+    </li>
+</ol>
 
 
-#Aufgabe 1
-###Logistik spielt in der Produktentwicklung der Automobilindustrie eine immer größer werdende Rolle. So müssen vom Lieferanten produzierte Teile zunächst zum OEM geliefert werden, bevor sie eingebaut werden können. Was auf den ersten Blick logisch erscheint, sollte für eine professionelle Organisation unbedingt näher analysiert werden. Erstellen Sie deshalb eine Verteilung für den Logistikverzug von Komponente „K7“. Nutzen Sie hierfür das Produktionsdatum aus dem Datensatz “Komponente_K7.csv” und das Wareneingangsdatum aus “Logistikverzug_K7.csv”. Sie können davon ausgehen, dass der Hersteller das Teil am auf den Produktionstag folgenden Werktag an die Logistikabteilung übergibt. Für die Versandvorbereitung wird ein Werktag benötig. Erstellen Sie für die Modellbildung in R einen neuen Datensatz “Logistikverzug”, der die benötigten Informationen aus beiden Datensätzen enthält.
 
-####Wie ist der Logistikverzug verteilt? Begründen Sie Ihre Auswahl und stellen Sie Ihre Vorgehensweise kurz dar (6 Punkte).
 
-####Wie viel Zeit vergeht mindestens/höchstens zwischen Warenausgang und Wareneingang (2 Punkte)?
+<br>
+<br>
 
-####Bestimmen Sie den Mittelwert des Logistikverzugs (1 Punkt).
+<h3> Aufgabe 1 id="Aufgabe1" </h3>
+<p> Logistik spielt in der Produktentwicklung der Automobilindustrie eine immer größer werdende Rolle. So müssen vom Lieferanten produzierte Teile zunächst zum OEM geliefert werden, bevor sie eingebaut werden können. Was auf den ersten Blick logisch erscheint, sollte für eine professionelle Organisation unbedingt näher analysiert werden. Erstellen Sie deshalb eine Verteilung für den Logistikverzug von Komponente „K7“. Nutzen Sie hierfür das Produktionsdatum aus dem Datensatz “Komponente_K7.csv” und das Wareneingangsdatum aus “Logistikverzug_K7.csv”. Sie können davon ausgehen, dass der Hersteller das Teil am auf den Produktionstag folgenden Werktag an die Logistikabteilung übergibt. Für die Versandvorbereitung wird ein Werktag benötigt. Erstellen Sie für die Modellbildung in R einen neuen Datensatz “Logistikverzug”, der die benötigten Informationen aus beiden Datensätzen enthält. </p>
 
-####tellen Sie die Verteilung in geeigneter Weise mit Plotly dar (2 Punkte).
+<p> Wie ist der Logistikverzug verteilt? Begründen Sie Ihre Auswahl und stellen Sie Ihre Vorgehensweise kurz dar (6 Punkte). </p>
+```{r, message = F}
+setwd("C:/Users/Samuel/code/ida_casestudy/Data/Logistikverzug")
+getwd()
+
+##Import des Datensatzes mit Infos zu den Produktionsdaten
+produktion = read.csv("Komponente_K7.csv", head = TRUE, sep=";")
+mode(produktion$Produktionsdatum)
+##Entfernung der Zeilennummer + 
+produktion = produktion[,2:6]
+produktion$Produktionsdatum = as.Date(produktion$Produktionsdatum, format = "%Y-%m-%d")
+mode(produktion$Produktionsdatum)
+
+##Import der Daten für den Wareneingang
+eingang = read.csv("Logistics_delay_K7.csv", head = TRUE)
+##Entfernen der Zeilennummer (obsolet)
+eingang = eingang[,2:6]
+
+##Änderung des Datentyps des Wareneigangsdatums: character -> numeric (Date)
+eingang$Wareneingang = as.Date(eingang$Wareneingang, format = "%Y-%m-%d")
+
+#Zusammenführung der Daten erfolgt mittels ID-Nummer (Überprüfung der Datentypen)
+logistik = merge(eingang, produktion, by = c("IDNummer","Herstellernummer","Werksnummer"))
+rm(eingang,produktion)
+
+##Hinzufügen einer Spalte für den Logistikverzug
+logistik = data.frame(logistik, logistikverzug = as.numeric(logistik$Wareneingang-logistik$Produktionsdatum))
+
+ggplot(logistik, aes(logistikverzug)) +
+    geom_bar() +
+    xlab("Logistikverzug in Tagen") +
+    ylab("Absolute Häufigkeit") +
+    ggtitle("Verteilung des Logistikverzugs von Komponente K7")
+
+```
+<br>
+<p> Aus dem Barplot wird ersichtlich, dass die Verteilung des Lieferverzugs einer Normalverteilung sehr ähnlich ist.
+Sie ist unimodal und leich linkssteil. Die Verteilung ist sehr symmetrisch (es gilt in etwa Median = Modus = Mittelwert).
+Die approximative Normalverteilung kann nach dem Zentralen Grenzwertsatz durch die additive Überlagerung vieler einzelner Zufallseffekte entstehen. Dies ist grafisch relativ gut zu sehen. Mathematisch, analytisch ist dies nicht ganz einfach zu zeigen, da die Daten ordinal skaliert sind mit relativ wenigen Ausprägungen.
+</p>
+(Vielleicht mit sample Daten also Pseudozufall einen Shapiro-Wilk-Test machen)
+Problem: Tests werden bei großen Stichproben automatisch signifikant.
+
+
+<!-- Grafischer Test mittels qq-plot -->
+<!-- qqnorm(logistik$logistikverzug) -->
+<!-- qqline(logistik$logistikverzug) -->
+<!-- Nicht besonders nahe an einer Normalverteilung, leider  -->
+
+<br>
+<p> Wie viel Zeit vergeht mindestens/höchstens zwischen Warenausgang und Wareneingang (2 Punkte)? </p>
+```{r}
+print(min(logistik$logistikverzug))
+
+max(logistik$logistikverzug)
+ggplot(logistik, aes(logistikverzug)) +
+    geom_boxplot() +
+    xlab("Logistikverzug in Tagen") +
+    scale_y_discrete("") +
+    ggtitle("Boxplot Logistikverzug")
+
+```
+<p> Dezile: </p>
+
+```{r, echo=F}
+print(quantile(logistik$logistikverzug, seq(0,1,0.1)))
+```
+<br>
+
+<p> Bestimmen Sie den Mittelwert des Logistikverzugs (1 Punkt). </p>
+```{r}
+#Median:
+fivenum(logistik$logistikverzug)[3]
+#Arithmetisches Mittel:
+mean(logistik$logistikverzug)
+#Modus
+names(which.max(table(logistik$logistikverzug)))
+
+```
+<p> Stellen Sie die Verteilung in geeigneter Weise mit Plotly dar (2 Punkte). </p>
 
 ```{r dataset, echo = FALSE}
-Lösungen s. R Datei
+plot_ly(x = logistik$logistikverzug, type = "histogram")
 ```
 
 
@@ -44,17 +165,19 @@ Lösungen s. R Datei
 
 
 
-#Aufgabe 2
-### Warum ist es sinnvoll, die Ihnen bereitgestellten Daten in separaten Dateien abzulegen und nicht alles in einer riesigen Tabelle abzuspeichern (4 Argumente)? Wie nennt sich das zugrunde liegende Datenbankkonzept? (3
+<h3> Aufgabe 2 id="Aufgabe2"</h3>
+<p> Warum ist es sinnvoll, die Ihnen bereitgestellten Daten in separaten Dateien abzulegen und nicht alles in einer riesigen Tabelle abzuspeichern (4 Argumente)? Wie nennt sich das zugrunde liegende Datenbankkonzept? (3 Punkte) </p>
+<br>
 
-Bei dem zugrundeliegenden Datenbankkonzept handelt es sich um das sog. 'Relational Database Management System' (RDBMS). Mit dem RDBMS ist es möglich, relationale Datenbanken und die zugehörigen Daten zu erstellen, zu pflegen und zu administrieren. 
-Hierzu werden die Daten separat in Tabellen gespeichert und strukturiert miteinander verknüpft. Diese Verknüpfungen werden genutzt, um Tabellen in beziehung zu setzen. 
+<p> Bei dem zugrundeliegenden Datenbankkonzept handelt es sich um das sog. "Relational Database Management System" (RDBMS). Mit dem RDBMS ist es möglich, relationale Datenbanken und die zugehörigen Daten zu erstellen, zu pflegen und zu administrieren. 
+Hierzu werden die Daten separat in Tabellen gespeichert und strukturiert miteinander verknüpft. Diese Verknüpfungen werden genutzt, um Tabellen in Beziehung zu setzen. 
 
 Es ist notwendig die Daten in eine normalisierte Form zu bringen und komplexe Datenobjekte so zu zerlegen, damit die in Beziehung zu einander stehen (über gemeinsame Attribute).
 
 Daten können mittels Datenbanksprachen wie SQL abgefragt und manipuliert werden.
+</p>
 
-Vorteile eines RDBMS:
+<h4> Vorteile eines RDBMS: </h4>
 <ol>
     <li> Schnellerer Abruf der Daten </li>
     <li> Eignet sich für für sehr große Datenvolumina </li>
@@ -64,55 +187,84 @@ Vorteile eines RDBMS:
     <li> Abfragen der Daten nach verschiedensten Kritierein ist möglich </li>
     <li> Unterstützung verteilter Datenbanken und einer Client-Server-Architektur</li>
     <li> Getrennt gespeicherte Daten erhöhen auch die Sicherheit des vollständigen                    Datensatzes. </li>
-    <li> Lässt mehrere Nutzerzugriffer zur selben Zeit (bei Gewährleistung der Datenintegrität) zu </li>
+    <li> Lässt mehrere Nutzerzugriffe zur selben Zeit (bei Gewährleistung der Datenintegrität) zu </li>
 </ol>
 
+<br>
+<br>
 
 
 
 
 
+<h3> Aufgabe 3 </h3>
+<p> Wie viele der Komponenten K7 landeten in Fahrzeugen, die in Dortmund zugelassen wurden? </p>
 
-#Aufgabe 3
-###Wie viele der Komponenten K7 landeten in Fahrzeugen, die in Dortmund zugelassen wurden?
+```{r, message = F}
+setwd("C:/Users/Samuel/code/ida_casestudy/Data/Zulassungen")
+getwd()
+#K7 ist nur in den Modellen vom Typ22 enthalten!!!
 
-```{r, warning = FALSE, message = FALSE}
-Lösungen s. R Datei
+
+# Ist das der richtige Ort? Wehr (Baden) nicht in Zulassungstabelle vorhanden
+# WEHR1 nach Tabelle Geodaten_Gemeinden_v1.2_2017-08-02_TrR
+zulassungen = read.csv("Zulassungen_alle_Fahrzeuge.csv", head = TRUE, sep=";")
+#Entfernen der unnötigen ersten Spalte
+zulassungen = zulassungen[,-1]
+
+setwd("C:/Users/Samuel/code/ida_casestudy/Data/Fahrzeug")
+Komponenten_Typ22 = read.csv2("Bestandteile_Fahrzeuge_OEM2_Typ22.csv")
+Komponenten_Typ22 = Komponenten_Typ22[,-1]
+
+# Filtern der Zulassungen auf Fahrzeuge aus WEHR1
+zulassungen_wehr1 = subset(zulassungen, subset = zulassungen$Gemeinden=="WEHR1")
+# Mit Datensatz zu Bestandtteilen joinen
+fahrzeuge_mit_k7_wehr1 = inner_join(Komponenten_Typ22, zulassungen_wehr1, by=c("ID_Fahrzeug" = "IDNummer"))
+nrow(fahrzeuge_mit_k7_wehr1)
 ```
 
 
 
 
-#Aufgabe 4
-### Welche Datentypen haben die Attribute der Zulassungstabelle „Zulassungen_aller_Fahrzeuge“? Erstellen Sie dazu eine Tabelle in Markdown. (2 Punkte)
+<h3> Aufgabe 4 </h3>
+<p> Welche Datentypen haben die Attribute der Zulassungstabelle „Zulassungen_aller_Fahrzeuge“? Erstellen Sie dazu eine Tabelle in Markdown. (2 Punkte) </p>
 
-```{r dataset, echo = F}
-Lösungen s. R Datei
-```
-
-
-
-
-
-#Aufgabe 5
-###Sie wollen Ihre Applikation veröffentlichen. Warum ist es gerade dann sinnvoll die Datensätze auf der Datenbank eines Servers abzulegen? Warum können Sie die Datensätze nicht auf Ihrem persönlichen Computer ablegen? Nennen Sie eine einfache Möglichkeit Ihre Applikation ihrem Kundenkreis zugänglich zu machen? (2 Argumente je Frage, insg. 3 Punkte)
-
-
-####Da ein Fernzugriff auf die Datenbank möglich sein soll ist es notwendig, diese auf einem Server anzulegen, auf welchen 24/7 zugegriffen werden kann. So ist es ebenso möglich, dass die Daten nichtnur zeitlich uneingeschränkt, sondern auch weltweit ohne direkten Zugriff auf einen speziellen Computer verfügbar gemacht werden können.
-####Eine Möglichkeit, die Applikation zu veröffentlichen wäre, sie innerhalb eines firmeneigenen passwortgeschützten Bereichs in eine Website zu implementieren. Ebenso wäre es möglich sie als Datei zu verschicken (diese Datei müsste ohne Aufwand ausführbar sein und eine Schnittstelle zum jew. Server enthalten.).
-
-```{}
+```{r}
+glimpse(zulassungen)
 
 ```
+<p>
+IDNummer: Character <br>
+Gemeinden: Character <br>
+Zulassung: Character (könnte mit as.Date(zulassungen$Zulassung, format= "%Y %d %m") sinnvoll formatiert werden) <br>
+</p>
 
-#Aufgabe 6
-###Am 11.08.2010 hat es einen Unfall mit Fahrerflucht gegeben. Von dem Kennzeichen des Unfallwagens fehlt jede Spur. Da Sie für das Kraftfahrtbundesamt arbeiten und fragt bittet Sie die Polizei um Mithilfe. Finden Sie heraus, wo das Fahrzeug mit der Karosseriebauteilnummer „K7-114-1142-31“ zugelassen wurde. (3 Punkte)
 
 
-```{}
 
+<h3> Aufgabe 5 </h3>
+<p> Sie wollen Ihre Applikation veröffentlichen. Warum ist es gerade dann sinnvoll die Datensätze auf der Datenbank eines Servers abzulegen? Warum können Sie die Datensätze nicht auf Ihrem persönlichen Computer ablegen? Nennen Sie eine einfache Möglichkeit Ihre Applikation ihrem Kundenkreis zugänglich zu machen? (2 Argumente je Frage, insg. 3 Punkte) </p>
+
+<p>
+Da ein Fernzugriff auf die Datenbank möglich sein soll ist es notwendig, diese auf einem Server anzulegen, auf welchen zu jeder Zeit zugegriffen werden kann. So ist es ebenso möglich, dass die Daten nicht nur zeitlich uneingeschränkt, sondern auch weltweit ohne direkten physischen Zugriff auf einen speziellen Computer verfügbar gemacht werden können.
+Eine Möglichkeit, die Applikation zu veröffentlichen wäre, sie innerhalb eines firmeneigenen passwortgeschützten Bereichs in eine Website zu implementieren. Ebenso wäre es möglich sie als Datei zu verschicken (diese Datei müsste ohne Aufwand ausführbar sein und eine Schnittstelle zum jew. Server enthalten).
+</p>
+
+
+
+
+
+<h3> Aufgabe 6 </h3>
+<p> Am 11.08.2010 hat es einen Unfall mit Fahrerflucht gegeben. Von dem Kennzeichen des Unfallwagens fehlt jede Spur. Da Sie für das Kraftfahrtbundesamt arbeiten und fragt bittet Sie die Polizei um Mithilfe. Finden Sie heraus, wo das Fahrzeug mit der Karosseriebauteilnummer „K7-114-1142-31“ zugelassen wurde. (3 Punkte) </p>
+
+
+
+```{r}
+zugelassene_fahrzeuge_mit_K7 = inner_join(zulassungen, Komponenten_Typ22, by=c("IDNummer" = "ID_Fahrzeug"))
+gesuchtes_Fahrzeug = subset(zugelassene_fahrzeuge_mit_K7, subset=(zugelassene_fahrzeuge_mit_K7$ID_Karosserie == "K7-114-1142-31")) 
+print(gesuchtes_Fahrzeug$Gemeinden)
 ```
-
+Das Fahrzeug mit der gesuchten Karosserie-Teilenummer "K7-114-1142-31" wurde in Allendorf-Eder zugelassen.
 
 
 
