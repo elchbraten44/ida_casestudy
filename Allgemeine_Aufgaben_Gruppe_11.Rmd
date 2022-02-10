@@ -139,7 +139,7 @@ ggplot(logistik, aes(logistikverzug)) +
 ```
 <p> Dezile: </p>
 
-```{r, echo=F}
+```{r, echo = F}
 print(quantile(logistik$logistikverzug, seq(0,1,0.1)))
 ```
 <br>
