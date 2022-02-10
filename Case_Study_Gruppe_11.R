@@ -1,11 +1,11 @@
 if(!require(install.packages("tidyverse")))
-if(!require(install.packages("readr")))
-if(!require(install.packages("data.table")))
-if(!require(install.packages("visdat")))
-if(!require(install.packages("stringr")))
-            
-# Laden der Packages
-library(tidyverse)
+    if(!require(install.packages("readr")))
+        if(!require(install.packages("data.table")))
+            if(!require(install.packages("visdat")))
+                if(!require(install.packages("stringr")))
+                    
+                    # Laden der Packages
+                    library(tidyverse)
 library(readr)
 library(data.table)
 library(stringr)
@@ -39,10 +39,10 @@ T1_dirty = readLines("Einzelteil_T01.txt") %>%
 for(i in 2:length(T1_dirty) ) {
     T1 = read.table(textConnection(T1_dirty[i]), sep = ",", header = T)
 }
-vis_miss(T1, warn_large_data = F)
+
 rm(T1_dirty)
 
-rm(T1)
+
 
 # Erledigt
 T2_dirty = readLines("Einzelteil_T02.txt") %>% 
@@ -184,7 +184,3 @@ OEM1_Typ11$Werksnummer = NULL
 vis_miss(OEM1_Typ11, warn_large_data = FALSE)
 # Variable Fehlerhaft_Datum Prüfen
 # Für alle Fahrzeuge, die nicht fehlerhaft sind hat Fehlerhaft_Datum den Wert NA
-
-
-
-
