@@ -113,9 +113,11 @@ ggplot(logistik, aes(logistikverzug)) +
 <br>
 <p> Aus dem Barplot wird ersichtlich, dass die Verteilung des Lieferverzugs einer Normalverteilung sehr ähnlich ist.
 Sie ist unimodal und leich linkssteil. Die Verteilung ist sehr symmetrisch (es gilt in etwa Median = Modus = Mittelwert).
-Die approximative Normalverteilung kann nach dem Zentralen Grenzwertsatz durch die additive Überlagerung vieler einzelner Zufallseffekte entstehen. Dies ist grafisch relativ gut zu sehen. Mathematisch, analytisch ist dies nicht ganz einfach zu zeigen, da die Daten ordinal skaliert sind mit relativ wenigen Ausprägungen.
+Die approximative Normalverteilung kann nach dem Zentralen Grenzwertsatz durch die additive Überlagerung vieler einzelner Zufallseffekte entstehen. 
+    Dies ist grafisch relativ gut zu sehen. Mathematisch, analytisch ist dies nicht ganz einfach zu zeigen, da die Daten ordinal, diskret skaliert sind mit relativ wenigen Ausprägungen.
 </p>
 (Vielleicht mit sample Daten also Pseudozufall einen Shapiro-Wilk-Test machen)
+und nur diskrete Daten
 Problem: Tests werden bei großen Stichproben automatisch signifikant.
 
 

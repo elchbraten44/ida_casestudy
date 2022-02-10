@@ -39,10 +39,10 @@ T1_dirty = readLines("Einzelteil_T01.txt") %>%
 for(i in 2:length(T1_dirty) ) {
     T1 = read.table(textConnection(T1_dirty[i]), sep = ",", header = T)
 }
-
+vis_miss(T1, warn_large_data = F)
 rm(T1_dirty)
 
-
+rm(T1)
 
 # Erledigt
 T2_dirty = readLines("Einzelteil_T02.txt") %>% 
