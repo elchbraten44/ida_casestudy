@@ -1,11 +1,11 @@
 if(!require(install.packages("tidyverse")))
-    if(!require(install.packages("readr")))
-        if(!require(install.packages("data.table")))
-            if(!require(install.packages("visdat")))
-                if(!require(install.packages("stringr")))
-                    
-                    # Laden der Packages
-                    library(tidyverse)
+if(!require(install.packages("readr")))
+if(!require(install.packages("data.table")))
+if(!require(install.packages("visdat")))
+if(!require(install.packages("stringr")))
+        
+# Laden der Packages
+library(tidyverse)
 library(readr)
 library(data.table)
 library(stringr)
@@ -39,7 +39,6 @@ T1_dirty = readLines("Einzelteil_T01.txt") %>%
 for(i in 2:length(T1_dirty) ) {
     T1 = read.table(textConnection(T1_dirty[i]), sep = ",", header = T)
 }
-
 rm(T1_dirty)
 
 
@@ -52,7 +51,7 @@ T2_dirty = readLines("Einzelteil_T02.txt") %>%
 for(i in 2:length(T2_dirty)) {
     T2 = read.table(textConnection(T2_dirty[i]), sep = ",", header = T)
 }
-
+rm(T2_dirty)
 
 
 
@@ -66,7 +65,7 @@ T3_dirty = readLines("Einzelteil_T03.txt") %>%
 for (i in 2:length(T3_dirty) ) {
     T3 = read.table(textConnection(T3_dirty[i]), sep=",", header = T)
 }
-
+rm(T3_dirty)
 
 
 # Erledigt
@@ -82,6 +81,8 @@ T11_dirty = readLines("Einzelteil_T11.txt") %>%
 for(n in 2:length(T11_dirty)) {
     T11 = read.table(textConnection(T11_dirty[n]), sep = ",", header = T)
 }
+rm(T11_dirty)
+
 
 
 # Erledigt
@@ -94,13 +95,15 @@ T21 = read.csv2("Einzelteil_T21.csv", stringsAsFactors = F)
 # Zeilenumbruch = '' fehlender Abstand
 T22_dirty = readLines("Einzelteil_T22.txt") %>% 
     gsub(pattern = '', replace = "\n") %>% 
-    gsub(pattern = '    ', replace = ',')
+    gsub(pattern = '\t', replace = ',')  
+     
 
-for(i in 2:length(T22_dirty)) {
+
+for(n in 2:length(T22_dirty)) {
     T22 = read.table(textConnection(T22_dirty[n]), sep = ",", header = T)
     
 }
-
+rm(T22_dirty)
 
 
 # Erledigt
@@ -140,7 +143,7 @@ GK_K2LE1_dirty = readLines("Komponente_K2LE1.txt") %>%
     gsub(pattern = '', replace = '\n', perl = TRUE) %>% 
     gsub(pattern = 'II', replace = ',')
 
-for(i in 2:length(GK_K2LE1)) {
+for(i in 2:length(GK_K2LE1_dirty)) {
     GK_K2LE1 = read.table(textConnection(GK_K2LE1_dirty[i]), sep=",", header = T)
 }
 
