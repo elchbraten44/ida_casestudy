@@ -33,13 +33,14 @@ setwd("C:/Users/Samuel/code/ida_casestudy/Data/Einzelteil")
 
 # Funktioniert nicht
 T1_dirty = readLines("Einzelteil_T01.txt") %>% 
-    gsub(pattern = '', replace = ',') %>% 
-    gsub(pattern = ' ', replace = '\n') 
+    gsub(pattern = '[:  :][:|:][:  :][:|:][:  :]', replace = ',') %>% 
+    gsub(pattern = '[: :]', replace = '\n') 
 
 for(i in 2:length(T1_dirty) ) {
     T1 = read.table(textConnection(T1_dirty[i]), sep = ",", header = T)
 }
 
+rm(T1_dirty)
 
 
 
