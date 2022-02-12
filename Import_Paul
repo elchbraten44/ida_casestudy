@@ -1,0 +1,144 @@
+---
+title: "Import_Test"
+author: "Paul Heinrich"
+date: "9 2 2022"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###Kontrolliere ob das Verzeichnis korrekt ist:
+```{r}
+getwd()
+```
+
+# Case Study: "Introduction to Engineering Data Analytics with R"
+
+## 0) Installieren der Packages
+
+Im ersten Schritt müssen die erforderlichen R- Packages installiert werden. Im Code prüfen wir dafür zunächst, ob das gewünschte Paket bereits installiert ist, um dann falls dies nicht der Fall ist die Installation vorzunehmen.
+
+
+```{r installiere Packages}
+if(!require(install.load)){
+  install.packages("install.load")
+}
+
+library(install.load)
+
+install_load("tidyverse", "readr", "ggplot2", "shiny", "leaflet", "stringr")
+
+```
+
+## 1) Import der Daten
+
+Als nächstes müssen die erforderlichen Daten importiert werden.
+
+### Import Fahrzeug
+
+```{r}
+# einlesen der beiden CSV- Dateien
+bestandteile <- read_csv2("Fahrzeug/Bestandteile_Fahrzeuge_OEM1_Typ11.csv")
+bestandteile1 <- read_csv("Fahrzeug/Fahrzeuge_OEM1_Typ11.csv")
+
+# joine beide Dataframes, speichere in neuem Dataframe
+df_Fahrzeug <- full_join(bestandteile1, bestandteile, by= "ID_Fahrzeug")
+
+# entferne DF bestandteile & bestandteile1
+rm(bestandteile, bestandteile1)
+
+
+```
+
+#### Prüfe ob Spalten identisch sind 
+```{r prüfe auf identische Spalten}
+# Prüfe ob "X1" und "...1.y" identisch sind:
+if(df_Fahrzeug$X1 == df_Fahrzeug$...1.y){
+  print("X1 und ...1.y sind identisch")
+}
+
+# Prüfe ob "X1" und "...1.x" identisch sind:
+if(df_Fahrzeug$X1 == df_Fahrzeug$...1.x){
+  print("X1 und ...1.y sind identisch")
+}
+
+```
+
+#### Entferne doppelte Spalten
+```{r}
+# entferne unnötige Spalte
+df_Fahrzeug$...1.y <- NULL
+
+# entferne unnötige Spalte
+df_Fahrzeug$...1.x <- NULL
+```
+
+
+### Import DF Karosserie
+```{r}
+# Import df_Karosserie
+df_Karosserie <- read_csv2("Komponente/Bestandteile_Komponente_K4.csv")
+
+```
+
+#### Import der Karosserie Einzelteile
+
+## Import des ersten Teils T30
+
+```{r}
+# Import df_T30
+df_T30 <- read_csv("Einzelteil/Einzelteil_T30.csv")
+
+# check if ...1 is increasing
+is.sorted = Negate(is.unsorted)
+is.sorted(df_T30[,1], strictly = TRUE)
+
+# subset df_T30.x
+df_T30subX <- df_T30[c(1:9)]
+
+# name the DF
+names(df_T30subX) <- c("...1", "X1", "ID_T30", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T30subX <- df_T30subX[rowSums(is.na(df_T30subX[,3:9])) != ncol(df_T30subX[,3:9]),]
+
+
+# subset df_T30.y 
+df_T30subY <- df_T30[c(1:2,10:16)]
+
+# name the DF
+names(df_T30subY) <- c("...1", "X1", "ID_T30", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T30subY <- df_T30subY[rowSums(is.na(df_T30subY[,3:9])) != ncol(df_T30subY[,3:9]),]
+
+
+# subset df_T30 & delete complete NA- rows
+df_T30subZ <- df_T30[c(1:2,17:23)]
+df_T30subZ <- df_T30subZ[rowSums(is.na(df_T30subZ[,3:9])) != ncol(df_T30subZ[,3:9]),]
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T30[c(1:1192630), ]
+NA1 <- NA1[rowSums(is.na(NA1[,10:23])) != ncol(NA1[,10:23]),]
+head(NA1)
+NA1 <- df_T30[c(1192631:1908208), ]
+NA1 <- NA1[rowSums(is.na(NA1[,c(3:9,17:23)])) != ncol(NA1[,c(3:9,17:23)]),]
+head(NA1)
+NA1 <- df_T30[c(1908209:2385260), ]
+NA1 <- NA1[rowSums(is.na(NA1[,3:16])) != ncol(NA1[,3:16]),]
+head(NA1)
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T30 <- rbind(df_T30subX, df_T30subY)
+df_T30 <- rbind(df_T30, df_T30subZ)
+
+# remove unnecessary
+rm(df_T30subX, df_T30subY, df_T30subZ)
+```
+
+In der Importdatei ist zu sehen, dass die Spaltenbezeichnungen sich wiederholen... Text...
