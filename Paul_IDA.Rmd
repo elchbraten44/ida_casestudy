@@ -1,0 +1,482 @@
+---
+title: "Import_Test"
+author: "Paul Heinrich"
+date: "9 2 2022"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###Kontrolliere ob das Verzeichnis korrekt ist:
+```{r}
+getwd()
+```
+
+# Case Study: "Introduction to Engineering Data Analytics with R"
+
+## 0) Installieren der Packages
+
+Im ersten Schritt müssen die erforderlichen R- Packages installiert werden. Im Code prüfen wir dafür zunächst, ob das gewünschte Paket bereits installiert ist, um dann falls dies nicht der Fall ist die Installation vorzunehmen.
+
+
+```{r 1}
+if(!require(install.load)){
+  install.packages("install.load")
+}
+
+library(install.load)
+
+install_load("tidyverse", "readr", "ggplot2", "shiny", "leaflet", "stringr")
+
+```
+
+## 1) Import der Daten
+
+Als nächstes müssen die erforderlichen Daten importiert werden.
+
+### Import Fahrzeug
+
+```{r}
+# einlesen der beiden CSV- Dateien
+bestandteile <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Fahrzeug/Bestandteile_Fahrzeuge_OEM1_Typ11.csv")
+bestandteile1 <- read_csv("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Fahrzeug/Fahrzeuge_OEM1_Typ11.csv")
+
+# joine beide Dataframes, speichere in neuem Dataframe
+df_Fahrzeug <- full_join(bestandteile1, bestandteile, by= "ID_Fahrzeug")
+
+# entferne DF bestandteile & bestandteile1
+rm(bestandteile, bestandteile1)
+
+
+```
+
+#### Prüfe ob Spalten identisch sind 
+```{r prüfe auf identische Spalten}
+# Prüfe ob "X1" und "...1.y" identisch sind:
+if(df_Fahrzeug$X1 == df_Fahrzeug$...1.y){
+  print("X1 und ...1.y sind identisch")
+}
+
+# Prüfe ob "X1" und "...1.x" identisch sind:
+if(df_Fahrzeug$X1 == df_Fahrzeug$...1.x){
+  print("X1 und ...1.y sind identisch")
+}
+
+```
+
+#### Entferne doppelte Spalten
+```{r}
+# entferne unnötige Spalte
+df_Fahrzeug$...1.y <- NULL
+
+# entferne unnötige Spalte
+df_Fahrzeug$...1.x <- NULL
+```
+
+#### Checke welche Komponenten verbaut sind:
+
+```{r}
+
+# Prüfe ob nur Komponenten mit einem bestimmten Namen verbaut sind:
+
+if (dim(filter(df_Fahrzeug, !grepl("K4", ID_Karosserie)))[1] == 0) {
+  print("Die Karosserie enthält nur das Teil K4...")
+}
+
+if (dim(filter(df_Fahrzeug, !grepl("K3AG1|K3SG1", ID_Schaltung)))[1] == 0) {
+  print("Die Schaltung enthält nur die Teile K3AG1 und K3SG1... ")
+}
+
+if (dim(filter(df_Fahrzeug, !grepl("K2LE1|K2ST1", ID_Sitze)))[1] == 0) {
+  print("Die Sitze enthalten nur die Teile K2LE1 und K2ST1... ")
+}
+
+if (dim(filter(df_Fahrzeug, !grepl("K1BE1|K1DI1", ID_Motor)))[1] == 0) {
+  print("Der Motor enthält nur die Teile K1BE1 und K1DI1... ")
+}
+
+# Prüfe ob doppelte Einträge vorhanden sind:
+if (sum(c(which(duplicated(df_Fahrzeug$ID_Karosserie)),
+        which(duplicated(df_Fahrzeug$ID_Schaltung)),
+        which(duplicated(df_Fahrzeug$ID_Sitze)),
+        which(duplicated(df_Fahrzeug$ID_Motor)))) == 0){
+  print("Es sind keine doppelten ID- Nummern vorhanden!")
+}
+
+```
+
+### Import DF Karosserie
+```{r}
+# Import df_Karosserie
+df_Karosserie <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K4.csv")
+
+```
+
+#### Import der Karosserie Einzelteile
+
+## Import des ersten Teils T30
+
+```{r}
+# Import df_T30
+df_T30 <- read_csv("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T30.csv")
+
+# check if ...1 is increasing
+is.sorted = Negate(is.unsorted)
+is.sorted(df_T30[,1], strictly = TRUE)
+
+# subset df_T30.x
+df_T30subX <- df_T30[c(1:9)]
+
+# name the DF
+names(df_T30subX) <- c("...1", "X1", "ID_T30", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T30subX <- df_T30subX[rowSums(is.na(df_T30subX[,3:9])) != ncol(df_T30subX[,3:9]),]
+
+
+# subset df_T30.y 
+df_T30subY <- df_T30[c(1:2,10:16)]
+
+# name the DF
+names(df_T30subY) <- c("...1", "X1", "ID_T30", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T30subY <- df_T30subY[rowSums(is.na(df_T30subY[,3:9])) != ncol(df_T30subY[,3:9]),]
+
+
+# subset df_T30 & delete complete NA- rows
+df_T30subZ <- df_T30[c(1:2,17:23)]
+df_T30subZ <- df_T30subZ[rowSums(is.na(df_T30subZ[,3:9])) != ncol(df_T30subZ[,3:9]),]
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T30[c(1:1192630), ]
+NA1 <- NA1[rowSums(is.na(NA1[,10:23])) != ncol(NA1[,10:23]),]
+head(NA1)
+NA1 <- df_T30[c(1192631:1908208), ]
+NA1 <- NA1[rowSums(is.na(NA1[,c(3:9,17:23)])) != ncol(NA1[,c(3:9,17:23)]),]
+head(NA1)
+NA1 <- df_T30[c(1908209:2385260), ]
+NA1 <- NA1[rowSums(is.na(NA1[,3:16])) != ncol(NA1[,3:16]),]
+head(NA1)
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T30 <- rbind(df_T30subX, df_T30subY)
+df_T30 <- rbind(df_T30, df_T30subZ)
+
+# remove unnecessary
+rm(df_T30subX, df_T30subY, df_T30subZ)
+```
+
+In der Importdatei ist zu sehen, dass die Spaltenbezeichnungen sich wiederholen... Text...
+
+## Import des zweiten Teils T31
+```{r}
+
+# read and edit .txt- file
+df_T31temp <- readLines("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T31.txt")%>%
+  gsub(pattern = "[\b]", replacement = "\n")%>%
+  gsub(pattern = "\"", replacement = "")%>%
+  gsub(pattern = "  ", replacement = ",")
+
+# save data to DF
+for(i in 2:length(df_T31temp)) {
+    df_T31 = read.table(textConnection(df_T31temp[i]), sep = ",", header = T, fill = TRUE)
+}
+df_T31 <- as_tibble(df_T31)
+
+# remove temporary data
+rm(df_T31temp)
+
+```
+
+## Import des dritten Teils T32
+```{r}
+# Import df_T32
+df_T32 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T32.csv")
+
+# check if ...1 is increasing
+is.sorted = Negate(is.unsorted)
+is.sorted(df_T32[,1], strictly = TRUE)
+
+# subset df_T32.x
+df_T32subX <- df_T32[c(1:9)]
+
+# name the DF
+names(df_T32subX) <- c("...1", "X1", "ID_T32", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T32subX <- df_T32subX[rowSums(is.na(df_T32subX[,3:9])) != ncol(df_T32subX[,3:9]),]
+
+
+# subset df_T32.y 
+df_T32subY <- df_T32[c(1:2,10:16)]
+
+# name the DF
+names(df_T32subY) <- c("...1", "X1", "ID_T32", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T32subY <- df_T32subY[rowSums(is.na(df_T32subY[,3:9])) != ncol(df_T32subY[,3:9]),]
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T32[c(1:988582), ]
+NA1 <- NA1[rowSums(is.na(NA1[,10:16])) != ncol(NA1[,10:16]),]
+head(NA1)
+NA1 <- df_T32[c(988583:1977164), ]
+NA1 <- NA1[rowSums(is.na(NA1[,3:9])) != ncol(NA1[,3:9]),]
+head(NA1)
+
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T32 <- rbind(df_T32subX, df_T32subY)
+
+
+# remove unnecessary
+rm(df_T32subX, df_T32subY)
+
+
+```
+### Import DF Schaltung
+```{r}
+# Import df_Schaltung
+df_Schaltung <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K3SG1.csv")
+
+```
+
+#### Import Teil T21
+
+```{r}
+# Import df_T21
+df_T21 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T21.csv")
+
+```
+#### Import Teil T22
+```{r}
+# read and edit .txt- file
+df_T22temp <- readLines("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T22.txt")%>%
+  gsub(pattern = "\t", replace = ",")%>% 
+  gsub(pattern = "\"\t\"", replace = ",")%>%
+  gsub(pattern = "\",", replace = ",")%>%
+  gsub(pattern = ",\"", replace = ",")%>%
+  gsub(patter = "\"", replace = "\n")
+
+
+# save data to DF
+for(i in 2:length(df_T22temp)) {
+    df_T22 = read.table(textConnection(df_T22temp[i]), sep = ",", header = T, fill = TRUE)
+}
+df_T22 <- as_tibble(df_T22)
+
+# remove temporary data
+rm(df_T22temp)
+
+
+# subset df_T22.x
+df_T22subX <- df_T22[c(1:8)]
+
+# name the DF
+names(df_T22subX) <- c("X1", "ID_T22", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T22subX <- df_T22subX[rowSums(is.na(df_T22subX[,3:8])) != ncol(df_T22subX[,3:8]),]
+
+# subset df_T22.y 
+df_T22subY <- df_T22[c(1,9:15)]
+
+# name the DF
+names(df_T22subY) <- c("X1", "ID_T22", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T22subY <- df_T22subY[rowSums(is.na(df_T22subY[,3:8])) != ncol(df_T22subY[,3:8]),]
+
+# subset df_T22 & delete complete NA- rows
+df_T22subZ <- df_T22[c(1,16:22)]
+df_T22subZ <- df_T22subZ[rowSums(is.na(df_T22subZ[,3:8])) != ncol(df_T22subZ[,3:8]),]
+
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T22[c(1:1281642), ]
+NA1 <- NA1[rowSums(is.na(NA1[,9:22])) != ncol(NA1[,9:22]),]
+head(NA1)
+NA1 <- df_T22[c(1281643:2306955), ]
+NA1 <- NA1[rowSums(is.na(NA1[,c(2:8,16:22)])) != ncol(NA1[,c(2:8,16:22)]),]
+head(NA1)
+NA1 <- df_T22[c(2306956:2563283), ]
+NA1 <- NA1[rowSums(is.na(NA1[,2:15])) != ncol(NA1[,2:15]),]
+head(NA1)
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T22 <- rbind(df_T22subX, df_T22subY)
+df_T22 <- rbind(df_T22, df_T22subZ)
+
+# remove unnecessary
+rm(df_T22subX, df_T22subY, df_T22subZ)
+
+```
+#### Import Teil T23
+```{r}
+# Import df_T23
+df_T23 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T23.csv")
+
+# check if ...1 is increasing
+is.sorted = Negate(is.unsorted)
+is.sorted(df_T23[,1], strictly = TRUE)
+
+# subset df_T23.x
+df_T23subX <- df_T23[c(1:9)]
+
+# name the DF
+names(df_T23subX) <- c("...1", "X1", "ID_T23", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T23subX <- df_T23subX[rowSums(is.na(df_T23subX[,3:9])) != ncol(df_T23subX[,3:9]),]
+
+
+# subset df_T23.y 
+df_T23subY <- df_T23[c(1:2,10:16)]
+
+# name the DF
+names(df_T23subY) <- c("...1", "X1", "ID_T23", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T23subY <- df_T23subY[rowSums(is.na(df_T23subY[,3:9])) != ncol(df_T23subY[,3:9]),]
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T23[c(1:1335746), ]
+NA1 <- NA1[rowSums(is.na(NA1[,10:16])) != ncol(NA1[,10:16]),]
+head(NA1)
+NA1 <- df_T23[c(1335747:1908208), ]
+NA1 <- NA1[rowSums(is.na(NA1[,3:9])) != ncol(NA1[,3:9]),]
+head(NA1)
+
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T23 <- rbind(df_T23subX, df_T23subY)
+
+
+# remove unnecessary
+rm(df_T23subX, df_T23subY)
+
+
+
+```
+
+### Import DF Sitze
+```{r}
+# Import df_Sitze
+df_Sitze <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K2LE1.csv")
+
+```
+
+
+
+
+
+#### SANDBOX
+
+
+```{r so funktionieren die TXT Dateien mit |}
+T27_dirty <- readLines("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_P31.txt")
+print(T27_dirty)
+
+T27_dirty <- gsub(pattern = "[|]", replacement = " ", T27_dirty)
+T27_dirty <- gsub(pattern = "[\b]", replacement = "\n", T27_dirty)
+T27_dirty <- gsub(pattern = "\"", replacement = "", T27_dirty)
+T27_dirty <- gsub(pattern = "     ", replacement = ",", T27_dirty)
+print(T27_dirty)
+
+#print(T27_dirty)
+list27 <- as.list(strsplit(T27_dirty, ",")[[1]])
+rm(i)
+
+for(i in 2:length(T27_dirty)) {
+    df_T27 = read.table(textConnection(T27_dirty[i]),sep =",", header = TRUE, fill = TRUE)
+}
+
+rm(df_T27)
+rm(list27)
+rm(i)
+
+```
+
+
+```{r unwichtig test}
+subNA1 <- data.frame(c(1,2,3,4,5,6,7,8,9,10), c("r", "is" , "great", "try", "more", "r", "is" , "great", "try", "more"))
+for(i in 1:nrow(subNA1)){
+  ifelse(subNA1[i,1]<subNA1[i+1,1], NA, print("FEHLER"))
+}
+is.sorted = Negate(is.unsorted)
+is.sorted(subNA1[,1], strictly = TRUE)
+```
+
+```{r unwichtig test}
+dftest <- data.frame(x=c("TEST", 24, NA, 6, NA, 9),
+                 y=c(1, 3, 4, 8, NA, 12),
+                 z=c(NA, 7, 5, 15, 7, 14))
+print(dftest)
+
+dftest <- dftest[rowSums(is.na(dftest[,2:3])) != ncol(dftest[,2:3]), ]
+
+print(dftest)
+
+
+```
+
+
+```{r so funktionieren die TXT Dateien}
+T27_dirty <- readLines("Einzelteil/Einzelteil_P27.txt")
+print(T27_dirty)
+
+T27_dirty <- gsub(pattern = "[|]", replacement = " ", T27_dirty)
+T27_dirty <- gsub(pattern = "[\a]", replacement = "\n", T27_dirty)
+print(T27_dirty)
+
+for(i in 2:length(T27_dirty)) {
+    df_T27 = read.table(textConnection(T27_dirty[i]), header = TRUE, fill = TRUE)
+}
+
+
+```
+
+### Prüfen auf doppelte Werte 
+```{r}
+which(duplicated(df_Fahrzeug$ID_Karosserie))
+which(duplicated(df_Fahrzeug$ID_Schaltung))
+which(duplicated(df_Fahrzeug$ID_Sitze))
+which(duplicated(df_Fahrzeug$ID_Motor))
+
+dftest1 <- filter(df_Fahrzeug, !grepl("K4", ID_Karosserie))
+dftest1 <- filter(df_Fahrzeug, !grepl("K3AG1|K3SG1", ID_Schaltung))
+dftest1 <- filter(df_Fahrzeug, !grepl("K2LE1|K2ST1", ID_Sitze))
+dftest1 <- filter(df_Fahrzeug, !grepl("K1BE1|K1DI1", ID_Motor))
+
+if (dim(filter(df_Fahrzeug, !grepl("K4", ID_Karosserie)))[1] == 0) {
+  print("Die Karosserie enthält nur das Teil K4...")
+}
+
+## Testbeispiel
+#which(duplicated(dftest$x))
+#rm(dftest)
+```
+
+
+
+
+
