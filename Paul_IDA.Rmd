@@ -106,15 +106,78 @@ if (sum(c(which(duplicated(df_Fahrzeug$ID_Karosserie)),
 ### Import DF Karosserie
 ```{r}
 # Import df_Karosserie
-df_Karosserie_K4 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K4.csv")
+df_Karosserie_K4 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Komponente_K4.csv")
+
+# subset df_Karosserie_K4.x
+df_Karosserie_K4subX <- df_Karosserie_K4[c(1:9)]
+
+# name the DF
+names(df_Karosserie_K4subX) <- c("...1", "X1", "ID_Karosserie_K4", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_Karosserie_K4subX <- df_Karosserie_K4subX[rowSums(is.na(df_Karosserie_K4subX[,3:9])) != ncol(df_Karosserie_K4subX[,3:9]),]
+
+
+# subset df_Karosserie_K4.y 
+df_Karosserie_K4subY <- df_Karosserie_K4[c(1:2,10:16)]
+
+# name the DF
+names(df_Karosserie_K4subY) <- c("...1", "X1", "ID_Karosserie_K4", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_Karosserie_K4subY <- df_Karosserie_K4subY[rowSums(is.na(df_Karosserie_K4subY[,3:9])) != ncol(df_Karosserie_K4subY[,3:9]),]
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_Karosserie_K4[c(1:790865), ]
+NA1 <- NA1[rowSums(is.na(NA1[,10:16])) != ncol(NA1[,10:16]),]
+head(NA1)
+NA1 <- df_Karosserie_K4[c(790866:1977164), ]
+NA1 <- NA1[rowSums(is.na(NA1[,3:9])) != ncol(NA1[,3:9]),]
+head(NA1)
+
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_Karosserie_K4 <- rbind(df_Karosserie_K4subX, df_Karosserie_K4subY)
+
+
+# remove unnecessary
+rm(df_Karosserie_K4subX, df_Karosserie_K4subY)
+
 ```
 
 
+### Import DF Bestandteile_Karosserie
+```{r}
+# Import df_Bestandteile_Karosserie
+df_Bestandteile_Karosserie_K4 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K4.csv")
+```
+
+
+### Join der Karosserie DFs
+```{r}
+# joine beide Dataframes, speichere in neuem Dataframe
+df_Karosserie <- full_join(df_Karosserie_K4, df_Bestandteile_Karosserie_K4, by= c("ID_Karosserie_K4" = "ID_K4"))
+
+# entferne DF bestandteile & bestandteile1
+rm(df_Karosserie_K4, df_Bestandteile_Karosserie_K4)
+
+# Wenn X1 und ...1 identisch sind:
+if(all(df_Karosserie$X1.x == df_Karosserie$...1)){
+  # Lösche ...1
+df_Karosserie$X1.x <- NULL
+}
+# -------> ANSCHEINEND SIND DIE SPALTEN X1 und ...1 NICHT IDENTISCH
+
+```
 
 #### Import der Karosserie Einzelteile
 
 
-## Import des ersten Teils T30
+#### Import Teil T30
 
 ```{r}
 # Import df_T30
@@ -169,7 +232,7 @@ rm(df_T30subX, df_T30subY, df_T30subZ)
 In der Importdatei ist zu sehen, dass die Spaltenbezeichnungen sich wiederholen... Text...
 
 
-#### Import des zweiten Teils T31
+#### Import Teil T31
 ```{r}
 
 # read and edit .txt- file
@@ -190,7 +253,7 @@ rm(df_T31temp)
 ```
 
 
-## Import des dritten Teils T32
+## Import Teil T32
 ```{r}
 # Import df_T32
 df_T32 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T32.csv")
@@ -912,8 +975,6 @@ print(T27_dirty)
 for(i in 2:length(T27_dirty)) {
     df_T27 = read.table(textConnection(T27_dirty[i]), header = TRUE, fill = TRUE)
 }
-
-
 ```
 
 ### Prüfen auf doppelte Werte 
@@ -936,4 +997,3 @@ if (dim(filter(df_Fahrzeug, !grepl("K4", ID_Karosserie)))[1] == 0) {
 #which(duplicated(dftest$x))
 #rm(dftest)
 ```
-
