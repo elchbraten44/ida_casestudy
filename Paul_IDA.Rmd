@@ -53,28 +53,22 @@ rm(bestandteile, bestandteile1)
 
 ```
 
-#### Prüfe ob Spalten identisch sind 
+#### Prüfe ob Spalten identisch sind, lösche ggf.
 ```{r prüfe auf identische Spalten}
-# Prüfe ob "X1" und "...1.y" identisch sind:
-if(df_Fahrzeug$X1 == df_Fahrzeug$...1.y){
-  print("X1 und ...1.y sind identisch")
-}
 
-# Prüfe ob "X1" und "...1.x" identisch sind:
-if(df_Fahrzeug$X1 == df_Fahrzeug$...1.x){
-  print("X1 und ...1.y sind identisch")
-}
-
-```
-
-#### Entferne doppelte Spalten
-```{r}
-# entferne unnötige Spalte
+# Wenn X1 und ...1.y identisch sind:
+if(all(df_Fahrzeug$X1 == df_Fahrzeug$...1.y)){
+  # Lösche ...1.y
 df_Fahrzeug$...1.y <- NULL
+}
 
-# entferne unnötige Spalte
+# Wenn X1 und ...1.x identisch sind:
+if(all(df_Fahrzeug$X1 == df_Fahrzeug$...1.x)){
+  # Lösche ...1.y
 df_Fahrzeug$...1.x <- NULL
+}
 ```
+
 
 #### Checke welche Komponenten verbaut sind:
 
@@ -108,24 +102,23 @@ if (sum(c(which(duplicated(df_Fahrzeug$ID_Karosserie)),
 
 ```
 
+
 ### Import DF Karosserie
 ```{r}
 # Import df_Karosserie
-df_Karosserie <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K4.csv")
-
+df_Karosserie_K4 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K4.csv")
 ```
 
+
+
 #### Import der Karosserie Einzelteile
+
 
 ## Import des ersten Teils T30
 
 ```{r}
 # Import df_T30
 df_T30 <- read_csv("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T30.csv")
-
-# check if ...1 is increasing
-is.sorted = Negate(is.unsorted)
-is.sorted(df_T30[,1], strictly = TRUE)
 
 # subset df_T30.x
 df_T30subX <- df_T30[c(1:9)]
@@ -175,7 +168,8 @@ rm(df_T30subX, df_T30subY, df_T30subZ)
 
 In der Importdatei ist zu sehen, dass die Spaltenbezeichnungen sich wiederholen... Text...
 
-## Import des zweiten Teils T31
+
+#### Import des zweiten Teils T31
 ```{r}
 
 # read and edit .txt- file
@@ -195,14 +189,11 @@ rm(df_T31temp)
 
 ```
 
+
 ## Import des dritten Teils T32
 ```{r}
 # Import df_T32
 df_T32 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T32.csv")
-
-# check if ...1 is increasing
-is.sorted = Negate(is.unsorted)
-is.sorted(df_T32[,1], strictly = TRUE)
 
 # subset df_T32.x
 df_T32subX <- df_T32[c(1:9)]
@@ -245,11 +236,20 @@ rm(df_T32subX, df_T32subY)
 
 
 ```
-### Import DF Schaltung
+
+
+### Import DF Schaltung (K3SG1)
 ```{r}
 # Import df_Schaltung
-df_Schaltung <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K3SG1.csv")
+df_Schaltung_K3SG1 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K3SG1.csv")
 
+```
+
+
+### Import DF Schaltung (K3AG1)
+```{r}
+# Import df_Schaltung
+df_Schaltung_K3AG1 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K3AG1.csv")
 ```
 
 #### Import Teil T21
@@ -287,7 +287,7 @@ df_T22subX <- df_T22[c(1:8)]
 names(df_T22subX) <- c("X1", "ID_T22", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
 
 # delete complete NA- rows
-df_T22subX <- df_T22subX[rowSums(is.na(df_T22subX[,3:8])) != ncol(df_T22subX[,3:8]),]
+df_T22subX <- df_T22subX[rowSums(is.na(df_T22subX[,2:8])) != ncol(df_T22subX[,2:8]),]
 
 # subset df_T22.y 
 df_T22subY <- df_T22[c(1,9:15)]
@@ -296,11 +296,11 @@ df_T22subY <- df_T22[c(1,9:15)]
 names(df_T22subY) <- c("X1", "ID_T22", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
 
 # delete complete NA- rows
-df_T22subY <- df_T22subY[rowSums(is.na(df_T22subY[,3:8])) != ncol(df_T22subY[,3:8]),]
+df_T22subY <- df_T22subY[rowSums(is.na(df_T22subY[,2:8])) != ncol(df_T22subY[,2:8]),]
 
 # subset df_T22 & delete complete NA- rows
 df_T22subZ <- df_T22[c(1,16:22)]
-df_T22subZ <- df_T22subZ[rowSums(is.na(df_T22subZ[,3:8])) != ncol(df_T22subZ[,3:8]),]
+df_T22subZ <- df_T22subZ[rowSums(is.na(df_T22subZ[,2:8])) != ncol(df_T22subZ[,2:8]),]
 
 
 
@@ -326,14 +326,12 @@ df_T22 <- rbind(df_T22, df_T22subZ)
 rm(df_T22subX, df_T22subY, df_T22subZ)
 
 ```
+
+
 #### Import Teil T23
 ```{r}
 # Import df_T23
 df_T23 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T23.csv")
-
-# check if ...1 is increasing
-is.sorted = Negate(is.unsorted)
-is.sorted(df_T23[,1], strictly = TRUE)
 
 # subset df_T23.x
 df_T23subX <- df_T23[c(1:9)]
@@ -378,13 +376,476 @@ rm(df_T23subX, df_T23subY)
 
 ```
 
-### Import DF Sitze
+#### Import des zweiten Teils T24
 ```{r}
-# Import df_Sitze
-df_Sitze <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K2LE1.csv")
+
+# read and edit .txt- file
+df_T24temp <- readLines("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T24.txt")%>%
+  gsub(pattern = "[\f]", replacement = "\n")%>%
+  gsub(pattern = "\"", replacement = "")%>%
+  gsub(pattern = "  ", replacement = ",")
+
+  
+# save data to DF
+for(i in 2:length(df_T24temp)) {
+    df_T24 = read.table(textConnection(df_T24temp[i]), sep = ",", header = T, fill = TRUE)
+}
+df_T24 <- as_tibble(df_T24)
+
+# remove temporary data
+rm(df_T24temp)
+
+
+
+# subset df_T24.x
+df_T24subX <- df_T24[c(1:8)]
+
+# name the DF
+names(df_T24subX) <- c("X1", "ID_T24", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T24subX <- df_T24subX[rowSums(is.na(df_T24subX[,2:8])) != ncol(df_T24subX[,2:8]),]
+
+# subset df_T24.y 
+df_T24subY <- df_T24[c(1,9:15)]
+
+# name the DF
+names(df_T24subY) <- c("X1", "ID_T24", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T24subY <- df_T24subY[rowSums(is.na(df_T24subY[,2:8])) != ncol(df_T24subY[,2:8]),]
+
+# subset df_T24 & delete complete NA- rows
+df_T24subZ <- df_T24[c(1,16:22)]
+df_T24subZ <- df_T24subZ[rowSums(is.na(df_T24subZ[,2:8])) != ncol(df_T24subZ[,2:8]),]
+
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T24[c(1:192246), ]
+NA1 <- NA1[rowSums(is.na(NA1[,9:22])) != ncol(NA1[,9:22]),]
+head(NA1)
+NA1 <- df_T24[c(192247:448574), ]
+NA1 <- NA1[rowSums(is.na(NA1[,c(2:8,16:22)])) != ncol(NA1[,c(2:8,16:22)]),]
+head(NA1)
+NA1 <- df_T24[c(448575:640821), ]
+NA1 <- NA1[rowSums(is.na(NA1[,2:15])) != ncol(NA1[,2:15]),]
+head(NA1)
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T24 <- rbind(df_T24subX, df_T24subY)
+df_T24 <- rbind(df_T24, df_T24subZ)
+
+# remove unnecessary
+rm(df_T24subX, df_T24subY, df_T24subZ)
 
 ```
 
+#### Import Teil T25
+```{r}
+# Import df_T25
+df_T25 <- read_csv("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T25.csv")
+
+# Wenn X1 und ...1 identisch sind:
+if(all(df_T25$X1 == df_T25$...1)){
+  # Lösche ...1
+df_T25$...1 <- NULL
+}
+```
+
+### Import DF Sitze (K2LE1)
+```{r}
+# Import df_Sitze
+df_Sitze_K2LE1 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K2LE1.csv")
+
+```
+### Import DF Sitze (K2ST1)
+```{r}
+# Import df_Sitze
+df_Sitze_K2ST1 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K2ST1.csv")
+
+```
+
+#### Import Teil T11
+```{r}
+
+# read and edit .txt- file
+df_T11temp <- readLines("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T11.txt")%>%
+  gsub(pattern = "[\f]", replacement = "\n")%>%
+  gsub(pattern = "\"", replacement = "")%>%
+  gsub(pattern = "\t", replacement = ",")
+  
+# save data to DF
+for(i in 2:length(df_T11temp)) {
+    df_T11 = read.table(textConnection(df_T11temp[i]), sep = ",", header = T, fill = TRUE)
+}
+df_T11 <- as_tibble(df_T11)
+
+# remove temporary data
+rm(df_T11temp)
+```
+#### Import Teil T12
+```{r}
+
+# Import df_T12
+df_T12 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T12.csv")
+
+# subset df_T12.x
+df_T12subX <- df_T12[c(1:9)]
+
+# name the DF
+names(df_T12subX) <- c("...1", "X1", "ID_T12", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T12subX <- df_T12subX[rowSums(is.na(df_T12subX[,3:9])) != ncol(df_T12subX[,3:9]),]
+
+
+# subset df_T12.y 
+df_T12subY <- df_T12[c(1:2,10:16)]
+
+# name the DF
+names(df_T12subY) <- c("...1", "X1", "ID_T12", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T12subY <- df_T12subY[rowSums(is.na(df_T12subY[,3:9])) != ncol(df_T12subY[,3:9]),]
+
+
+# subset df_T12 & delete complete NA- rows
+df_T12subZ <- df_T12[c(1:2,17:23)]
+df_T12subZ <- df_T12subZ[rowSums(is.na(df_T12subZ[,3:9])) != ncol(df_T12subZ[,3:9]),]
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T12[c(1:572462), ]
+NA1 <- NA1[rowSums(is.na(NA1[,10:23])) != ncol(NA1[,10:23]),]
+head(NA1)
+NA1 <- df_T12[c(572463:1717387), ]
+NA1 <- NA1[rowSums(is.na(NA1[,c(3:9,17:23)])) != ncol(NA1[,c(3:9,17:23)]),]
+head(NA1)
+NA1 <- df_T12[c(1717388:1908208), ]
+NA1 <- NA1[rowSums(is.na(NA1[,3:16])) != ncol(NA1[,3:16]),]
+head(NA1)
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T12 <- rbind(df_T12subX, df_T12subY)
+df_T12 <- rbind(df_T12, df_T12subZ)
+
+# remove unnecessary
+rm(df_T12subX, df_T12subY, df_T12subZ)
+```
+
+#### Import Teil T13
+```{r}
+# Import df_T13
+df_T13 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T13.csv")
+
+# Wenn X1 und ...1 identisch sind:
+if(all(df_T13$X1 == df_T13$...1)){
+  # Lösche ...1
+df_T13$...1 <- NULL
+}
+```
+
+#### Import Teil T14
+```{r}
+# Import df_T14
+df_T14 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T14.csv")
+
+# Wenn X1 und ...1 identisch sind:
+if(all(df_T14$X1 == df_T14$...1)){
+  # Lösche ...1
+df_T14$...1 <- NULL
+}
+```
+#### Import Teil T15
+```{r}
+# Import df_T15
+df_T15 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T15.csv")
+
+# subset df_T15.x
+df_T15subX <- df_T15[c(1:9)]
+
+# name the DF
+names(df_T15subX) <- c("...1", "X1", "ID_T15", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T15subX <- df_T15subX[rowSums(is.na(df_T15subX[,3:9])) != ncol(df_T15subX[,3:9]),]
+
+
+# subset df_T15.y 
+df_T15subY <- df_T15[c(1:2,10:16)]
+
+# name the DF
+names(df_T15subY) <- c("...1", "X1", "ID_T15", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T15subY <- df_T15subY[rowSums(is.na(df_T15subY[,3:9])) != ncol(df_T15subY[,3:9]),]
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T15[c(1:238526), ]
+NA1 <- NA1[rowSums(is.na(NA1[,10:16])) != ncol(NA1[,10:16]),]
+head(NA1)
+NA1 <- df_T15[c(238527:477052), ]
+NA1 <- NA1[rowSums(is.na(NA1[,3:9])) != ncol(NA1[,3:9]),]
+head(NA1)
+
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T15 <- rbind(df_T15subX, df_T15subY)
+
+
+# remove unnecessary
+rm(df_T15subX, df_T15subY)
+
+
+```
+### Import DF Motor (K1BE1)
+```{r}
+# Import df_Sitze
+df_Motor_K1BE1 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K1BE1.csv")
+
+```
+
+### Import DF Motor (K1DI1)
+```{r}
+# Import df_Sitze
+df_Motor_K1DI1 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Komponente/Bestandteile_Komponente_K1DI1.csv")
+
+```
+
+#### Import Teil T01
+```{r}
+
+# read and edit .txt- file
+df_T01temp <- readLines("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T01.txt")%>%
+  gsub(pattern = "\"", replacement = "")%>%
+  gsub(pattern = "[:  :][:|:][:  :][:|:][:  :]", replacement = ",")%>%
+  gsub(pattern = "[: :]", replacement = "\n")
+
+  
+# save data to DF
+for(i in 2:length(df_T01temp)) {
+    df_T01 = read.table(textConnection(df_T01temp[i]), sep = ",", header = T, fill = TRUE)
+}
+df_T01 <- as_tibble(df_T01)
+
+# remove temporary data
+rm(df_T01temp)
+
+# subset df_T01.x
+df_T01subX <- df_T01[c(1:8)]
+
+# name the DF
+names(df_T01subX) <- c("X1", "ID_T01", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T01subX <- df_T01subX[rowSums(is.na(df_T01subX[,2:8])) != ncol(df_T01subX[,2:8]),]
+
+# subset df_T01.y 
+df_T01subY <- df_T01[c(1,9:15)]
+
+# name the DF
+names(df_T01subY) <- c("X1", "ID_T01", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T01subY <- df_T01subY[rowSums(is.na(df_T01subY[,2:8])) != ncol(df_T01subY[,2:8]),]
+
+# subset df_T01 & delete complete NA- rows
+df_T01subZ <- df_T01[c(1,16:22)]
+df_T01subZ <- df_T01subZ[rowSums(is.na(df_T01subZ[,2:8])) != ncol(df_T01subZ[,2:8]),]
+
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T01[c(1:1281642), ]
+NA1 <- NA1[rowSums(is.na(NA1[,9:22])) != ncol(NA1[,9:22]),]
+head(NA1)
+NA1 <- df_T01[c(1281643:2563284), ]
+NA1 <- NA1[rowSums(is.na(NA1[,c(2:8,16:22)])) != ncol(NA1[,c(2:8,16:22)]),]
+head(NA1)
+NA1 <- df_T01[c(2563285:3204104), ]
+NA1 <- NA1[rowSums(is.na(NA1[,2:15])) != ncol(NA1[,2:15]),]
+head(NA1)
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T01 <- rbind(df_T01subX, df_T01subY)
+df_T01 <- rbind(df_T01, df_T01subZ)
+
+# remove unnecessary
+rm(df_T01subX, df_T01subY, df_T01subZ)
+
+```
+
+
+#### Import Teil T02
+```{r}
+# read and edit .txt- file
+df_T02temp <- readLines("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T02.txt")%>%
+  gsub(pattern = "\"", replacement = "")%>%
+  gsub(pattern = "  ", replacement = ",")%>%
+  gsub(pattern = "\t", replacement = "\n")
+
+  
+# save data to DF
+for(i in 2:length(df_T02temp)) {
+    df_T02 = read.table(textConnection(df_T02temp[i]), sep = ",", header = T, fill = TRUE)
+}
+df_T02 <- as_tibble(df_T02)
+
+# remove temporary data
+rm(df_T02temp)
+
+# subset df_T02.x
+df_T02subX <- df_T02[c(1:8)]
+
+# name the DF
+names(df_T02subX) <- c("X1", "ID_T02", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T02subX <- df_T02subX[rowSums(is.na(df_T02subX[,2:8])) != ncol(df_T02subX[,2:8]),]
+
+
+# subset df_T02.y 
+df_T02subY <- df_T02[c(1,9:15)]
+
+# name the DF
+names(df_T02subY) <- c("X1", "ID_T02", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T02subY <- df_T02subY[rowSums(is.na(df_T02subY[,2:8])) != ncol(df_T02subY[,2:8]),]
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T02[c(1:961231), ]
+NA1 <- NA1[rowSums(is.na(NA1[,9:15])) != ncol(NA1[,9:15]),]
+head(NA1)
+NA1 <- df_T02[c(961232:3204104), ]
+NA1 <- NA1[rowSums(is.na(NA1[,2:8])) != ncol(NA1[,2:8]),]
+head(NA1)
+
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T02 <- rbind(df_T02subX, df_T02subY)
+
+
+# remove unnecessary
+rm(df_T02subX, df_T02subY)
+
+
+
+```
+#### Import Teil T03
+```{r}
+# read and edit .txt- file
+df_T03temp <- readLines("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T03.txt")%>%
+  gsub(pattern = "\"", replacement = "")%>%
+  gsub(pattern = "[|]", replacement = ",")%>%
+  gsub(pattern = "\v", replacement = "\n")
+
+  
+# save data to DF
+for(i in 2:length(df_T03temp)) {
+    df_T03 = read.table(textConnection(df_T03temp[i]), sep = ",", header = T, fill = TRUE)
+}
+df_T03 <- as_tibble(df_T03)
+
+# remove temporary data
+rm(df_T03temp)
+```
+
+
+#### Import Teil T04
+```{r}
+# Import df_T04
+df_T04 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T04.csv")
+
+# Wenn X1 und ...1 identisch sind:
+if(all(df_T04$X1 == df_T04$...1)){
+  # Lösche ...1
+df_T04$...1 <- NULL
+}
+```
+
+
+#### Import Teil T05
+```{r}
+# Import df_T05
+df_T05 <- read_csv("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T05.csv")
+
+
+
+# subset df_T05.x
+df_T05subX <- df_T05[c(1:9)]
+
+# name the DF
+names(df_T05subX) <- c("...1", "X1", "ID_T05", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T05subX <- df_T05subX[rowSums(is.na(df_T05subX[,3:9])) != ncol(df_T05subX[,3:9]),]
+
+
+# subset df_T05.y 
+df_T05subY <- df_T05[c(1:2,10:16)]
+
+# name the DF
+names(df_T05subY) <- c("...1", "X1", "ID_T05", "Produktionsdatum", "Herstellernummer", "Werksnummer", "Fehlerhaft", "Fehlerhaft_Datum", "Fehlerhaft_Fahrleistung")
+
+# delete complete NA- rows
+df_T05subY <- df_T05subY[rowSums(is.na(df_T05subY[,3:9])) != ncol(df_T05subY[,3:9]),]
+
+
+# subset to look for NAs -> if head() is empty there is no NA
+NA1 <- df_T05[c(1:596315), ]
+NA1 <- NA1[rowSums(is.na(NA1[,10:16])) != ncol(NA1[,10:16]),]
+head(NA1)
+NA1 <- df_T05[c(596316:1192630), ]
+NA1 <- NA1[rowSums(is.na(NA1[,3:9])) != ncol(NA1[,3:9]),]
+head(NA1)
+
+
+# remove DF "NA1"
+rm(NA1)
+
+# combine the 3 DFs to a single one
+df_T05 <- rbind(df_T05subX, df_T05subY)
+
+
+# remove unnecessary
+rm(df_T05subX, df_T05subY)
+
+
+```
+
+
+#### Import Teil T06
+```{r}
+# Import df_T06
+df_T06 <- read_csv("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Einzelteil/Einzelteil_T06.csv")
+
+# Wenn X1 und ...1 identisch sind:
+if(all(df_T06$X1 == df_T06$...1)){
+  # Lösche ...1
+df_T06$...1 <- NULL
+}
+
+
+```
 
 
 
@@ -475,8 +936,4 @@ if (dim(filter(df_Fahrzeug, !grepl("K4", ID_Karosserie)))[1] == 0) {
 #which(duplicated(dftest$x))
 #rm(dftest)
 ```
-
-
-
-
 
