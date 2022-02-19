@@ -45,7 +45,7 @@ bestandteile <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data
 bestandteile1 <- read_csv("C:/Users/uspab/Desktop/UNI/Master/IDA/Case Study/Data/Fahrzeug/Fahrzeuge_OEM1_Typ11.csv")
 
 # joine beide Dataframes, speichere in neuem Dataframe
-df_Fahrzeug <- full_join(bestandteile1, bestandteile, by= "ID_Fahrzeug")
+df_Fahrzeug <- inner_join(bestandteile1, bestandteile, by= "ID_Fahrzeug")
 
 # entferne DF bestandteile & bestandteile1
 rm(bestandteile, bestandteile1)
@@ -160,7 +160,7 @@ df_Bestandteile_Karosserie_K4 <- read_csv2("C:/Users/uspab/Desktop/UNI/Master/ID
 ### Join der Karosserie DFs
 ```{r}
 # joine beide Dataframes, speichere in neuem Dataframe
-df_Karosserie <- full_join(df_Karosserie_K4, df_Bestandteile_Karosserie_K4, by= c("ID_Karosserie_K4" = "ID_K4"))
+df_Karosserie <- inner_join(df_Karosserie_K4, df_Bestandteile_Karosserie_K4, by= c("ID_Karosserie_K4" = "ID_K4"))
 
 # entferne DF bestandteile & bestandteile1
 rm(df_Karosserie_K4, df_Bestandteile_Karosserie_K4)
@@ -300,6 +300,34 @@ rm(df_T32subX, df_T32subY)
 
 ```
 
+# Join Karosserieteile (T30, T31, T32) und Karosserie 
+```{r}
+# joine beide Dataframes, speichere in neuem Dataframe
+df_Karosserie_Teile <- inner_join(df_Karosserie, df_T30, by= "ID_T30")
+
+# anti_join um zu ermitteln, welche Teile gar nicht verbaut worden sind
+df_T30_rest <- anti_join(df_T30, df_Karosserie, by= "ID_T30")
+
+# Test an einem Beispiel ob wirklich kein Eintrag vorhanden ist
+print(df_Karosserie_Teile[which(df_Karosserie_Teile$ID_T30 == "30-216-2162-3"), ])
+
+# joine beide Dataframes, speichere in neuem Dataframe
+df_Karosserie_Teile <- inner_join(df_Karosserie_Teile, df_T31, by= "ID_T31")
+
+# anti_join um zu ermitteln, welche Teile gar nicht verbaut worden sind
+df_T31_rest <- anti_join(df_T31, df_Karosserie, by= "ID_T31")
+
+# joine beide Dataframes, speichere in neuem Dataframe
+df_Karosserie_Teile <- inner_join(df_Karosserie_Teile, df_T32, by= "ID_T32")
+
+# anti_join um zu ermitteln, welche Teile gar nicht verbaut worden sind
+df_T32_rest <- anti_join(df_T32, df_Karosserie, by= "ID_T32")
+
+# Spaltenbezeichungen für den DF
+names(df_Karosserie_Teile) <- c("...1","X1", "ID_Karosserie", "Produktionsdatum_Karosserie", "Herstellernummer_Karosserie", "Werksnummer_Karosserie", "Fehlerhaft_Karosserie", "Fehlerhaft_Datum_Karosserie", "Fehlerhaft_Fahrleistung_Karosserie", "X1_K4", "ID_T30", "ID_T31", "ID_T32", "...1_T30",  "X1_T30", "Produktionsdatum_T30", "Herstellernummer_T30", "Werksnummer_T30", "Fehlerhaft_T30", "Fehlerhaft_Datum_T30", "Fehlerhaft_Fahrleistung_T30", "X1_T31", "Herstellernummer_T31", "Werksnummer_T31", "Fehlerhaft_T31", "Fehlerhaft_Datum_T31", "Fehlerhaft_Fahrleistung_T31", "Produktionsdatum_Origin_01011970_T31", "origin_T31", "...1_T32",  "X1_T32", "Produktionsdatum_T32", "Herstellernummer_T32", "Werksnummer_T32", "Fehlerhaft_T32", "Fehlerhaft_Datum_T32", "Fehlerhaft_Fahrleistung_T32")
+
+
+```
 
 ### Import DF Schaltung (K3SG1)
 ```{r}
@@ -975,6 +1003,8 @@ print(T27_dirty)
 for(i in 2:length(T27_dirty)) {
     df_T27 = read.table(textConnection(T27_dirty[i]), header = TRUE, fill = TRUE)
 }
+
+
 ```
 
 ### Prüfen auf doppelte Werte 
