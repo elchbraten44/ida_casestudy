@@ -170,7 +170,10 @@ if(all(df_Karosserie$X1.x == df_Karosserie$...1)){
   # Lösche ...1
 df_Karosserie$X1.x <- NULL
 }
+
 # -------> ANSCHEINEND SIND DIE SPALTEN X1 und ...1 NICHT IDENTISCH
+# Prüfe wo nicht identisch
+print(df_Karosserie[which(df_Karosserie$X1.x != df_Karosserie$...1), ])
 
 ```
 
